@@ -41,7 +41,8 @@ class Car:
 
         self.turn_speed = np.deg2rad(1)
 
-        self.front_distance = 200
+        self.front_distance = 300
+        self.side_distance = 32
 
         self.collide_front = False
         self.collide_back = False
@@ -50,7 +51,7 @@ class Car:
 
     def update(self, up_press, down_press, left_press, right_press, walls):
 
-        print(self.collide_front, self.collide_back)
+        print(self.collide_front, self.collide_back, self.collide_left, self.collide_right)
 
         if up_press and not self.collide_front:
             self.speed += self.accelertion
@@ -68,18 +69,17 @@ class Car:
                     self.speed = 0
                 self.x += self.speed * cos(self.look_angle)
                 self.y += self.speed * sin(self.look_angle)
-        if left_press and not self.collide_left:
-            if self.speed > 0:
+        if left_press:
+            if self.speed > 0 and not self.collide_front and not self.collide_left:
                 self.look_angle -= self.turn_speed * self.speed / self.top_speed
-            elif self.speed == 0 and down_press:
+            elif self.speed == 0 and down_press and not self.collide_back and not self.collide_right:
                 self.look_angle += self.turn_speed
-        if right_press and not self.collide_right:
-            if self.speed > 0:
+        if right_press:
+            if self.speed > 0 and not self.collide_front and not self.collide_right:
                 self.look_angle += self.turn_speed * self.speed / self.top_speed
-            elif self.speed == 0 and down_press:
+            elif self.speed == 0 and down_press and not self.collide_back and not self.collide_left:
                 self.look_angle -= self.turn_speed
-
-        if not up_press and not down_press and self.speed > 0 and not self.collide_front:
+        if not up_press and not down_press and self.speed > 0 and not self.collide_front and not self.collide_left and not self.collide_right:
             self.speed -= self.deceleration
             if self.speed < 0:
                 self.speed = 0
@@ -108,6 +108,28 @@ class Car:
             self.collide_back = True
         else:
             self.collide_back = False
+
+        if collide_with_walls(
+            walls,
+            self.x + self.front_distance * cos(self.look_angle),
+            self.y + self.front_distance * sin(self.look_angle),
+            self.x + self.front_distance * cos(self.look_angle) + self.side_distance * cos(self.look_angle - np.pi / 2),
+            self.y + self.front_distance * sin(self.look_angle) + self.side_distance * sin(self.look_angle - np.pi / 2)
+        ):
+            self.collide_left = True
+        else:
+            self.collide_left = False
+        
+        if collide_with_walls(
+            walls,
+            self.x + self.front_distance * cos(self.look_angle),
+            self.y + self.front_distance * sin(self.look_angle),
+            self.x + self.front_distance * cos(self.look_angle) + self.side_distance * cos(self.look_angle + np.pi / 2),
+            self.y + self.front_distance * sin(self.look_angle) + self.side_distance * sin(self.look_angle + np.pi / 2)
+        ):
+            self.collide_right = True
+        else:
+            self.collide_right = False
 
     def render(self, screen):
         screen.blit(self.image, (self.screen_x, self.screen_y))
