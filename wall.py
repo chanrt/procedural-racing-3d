@@ -7,7 +7,6 @@ class Wall:
         self.y3 = y3
         self.x4 = x4
         self.y4 = y4
-        self.total = sqrt(x3 * x3 + x4 * x4)
 
         self.color = pg.Color("blue")
         self.width = 5
