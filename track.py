@@ -1,7 +1,6 @@
 from math import sin, cos, fabs
 from wall import Wall
 import random
-from matplotlib import pyplot as plt
 import numpy as np
 
 
@@ -13,8 +12,6 @@ class Track:
         self.wall_segment_length = 2000
         self.front_load_distance = 8000
         self.back_load_distance = 4000
-
-        self.plot_track = False
 
         self.track_curvature = []
         self.walls = []
@@ -118,22 +115,6 @@ class Track:
                 self.walls[-2].x4, self.walls[-2].y4, x4 + vertical_width, y4 + horizontal_width))
 
         self.final_x = self.walls[-1].x4
-
-        if self.plot_track:
-            x, y = [], []
-            for i, wall in enumerate(self.walls):
-                if i % 2 == 1:
-                    x.append(wall.x3)
-                    y.append(wall.y3)
-            plt.plot(x, y)
-
-            x, y = [], []
-            for i, wall in enumerate(self.walls):
-                if i % 2 == 0:
-                    x.append(wall.x3)
-                    y.append(wall.y3)
-            plt.plot(x, y)
-            plt.show()
 
     def load_walls(self, car_position):
         visible_walls = []

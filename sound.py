@@ -1,4 +1,5 @@
 import pygame as pg
+from time import sleep
 
 class Sound:
     def __init__(self):
@@ -12,6 +13,7 @@ class Sound:
         
         self.crash_sound = pg.mixer.Sound("sounds/crash.mp3")
         self.scratch_sound = pg.mixer.Sound("sounds/scratch.wav")
+        self.finish_sound = pg.mixer.Sound("sounds/finish.wav")
 
     def play_idle(self):
         state_changed = False
@@ -101,7 +103,14 @@ class Sound:
     def play_crash(self):
         state_changed = False
 
-        if self.state == "idle" or self.state == "brake" or self.state == "top":
+        if self.state == "idle":
+            self.idle_sound.stop()
+            state_changed = True
+        elif self.state == "brake":
+            self.brake_sound.stop()
+            state_changed = True
+        elif self.state == "top":
+            self.top_sound.stop()
             state_changed = True
         elif self.state == "accelerate" or self.state == "decelerate":
             pg.mixer.music.stop()
@@ -113,3 +122,15 @@ class Sound:
 
     def play_scratch(self):
         pass
+
+    def play_finish(self):
+        pg.mixer.music.stop()
+        if self.state == "idle":
+            self.idle_sound.stop()
+        elif self.state == "brake":
+            self.brake_sound.stop()
+        elif self.state == "top":
+            self.top_sound.stop()            
+
+        self.finish_sound.play()
+        sleep(1)

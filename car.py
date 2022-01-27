@@ -182,3 +182,9 @@ class Car:
 
     def render(self, screen):
         screen.blit(self.image, (self.screen_x, self.screen_y))
+
+    def reset(self, x, y):
+        self.x = x
+        self.y = y
+        self.speed = 0
+        self.look_angle = 0
