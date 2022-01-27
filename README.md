@@ -5,4 +5,4 @@
  
  Double click on the main.py file to run
  
- ![alt_text][https://i.ibb.co/Y3fH7QM/screenshot.png]
+ ![alt_text](https://i.ibb.co/Y3fH7QM/screenshot.png)
