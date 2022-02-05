@@ -1,3 +1,4 @@
+from loader import get_resource_path
 import pygame as pg
 
 class Progress:
@@ -8,7 +9,7 @@ class Progress:
         self.width = screen_width / 30
         self.height = screen_height / 2
 
-        self.image = pg.transform.smoothscale(pg.image.load("sprites/checkerboard.png"), (self.width, self.height / 10)).convert()
+        self.image = pg.transform.smoothscale(pg.image.load(get_resource_path("sprites/checkerboard.png")), (self.width, self.height / 10)).convert()
 
         self.x = screen_width - 3 * self.width / 2
         self.y = (screen_height - self.height) / 2

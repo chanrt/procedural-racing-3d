@@ -2,6 +2,7 @@ import numpy as np
 import pygame as pg
 from math import sin, cos, fabs
 from sound import Sound
+from loader import get_resource_path
 
 def collide_with_walls(walls, current_x, current_y, future_x, future_y):
     for wall in walls:
@@ -27,7 +28,7 @@ class Car:
         car_width = screen_width / 3
         car_height = screen_height / 4
         self.image = pg.transform.smoothscale(
-            pg.image.load("sprites/car.png"), (car_width, car_height)).convert_alpha()
+            pg.image.load(get_resource_path("sprites/car.png")), (car_width, car_height)).convert_alpha()
 
         self.screen_x = screen_width / 2 - car_width / 2
         self.screen_y = 5 * screen_height / 6 - car_height / 2

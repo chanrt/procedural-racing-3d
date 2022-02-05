@@ -1,9 +1,11 @@
 import time
 from car import Car
 from ray import Ray
+from loader import get_resource_path
 from minimap import Minimap
 from progress import Progress
 from speedometer import Speedometer
+from start_menu import start_menu
 from track import Track
 import numpy as np
 import pygame as pg
@@ -51,7 +53,7 @@ def play_game(track_distance):
     walls = track.load_walls(car.x)
     progress_bar = Progress(car, track, screen_width, screen_height)
     minimap = Minimap(car, track, screen_width, screen_height)
-    skyline = pg.transform.smoothscale(pg.image.load("sprites/skyline.jpg"), (screen_width, screen_height / 2)).convert()
+    skyline = pg.transform.smoothscale(pg.image.load(get_resource_path("sprites/skyline.jpg")), (screen_width, screen_height / 2)).convert()
     skyline_turn_sensitivity = 200
 
     # dynamic loader of walls
@@ -63,8 +65,9 @@ def play_game(track_distance):
     timer_started = False
     up_press, down_press, left_press, right_press = False, False, False, False
 
+    running = True
     # main loop
-    while 1:
+    while running:
         clock.tick(fps)
 
         # initial rendering
@@ -83,17 +86,18 @@ def play_game(track_distance):
                 exit_program()
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    exit_program()
-                if event.key == pg.K_UP:
+                    car.sound.stop_sound()
+                    running = False
+                if event.key == pg.K_UP or event.key == pg.K_w:
                     up_press = True
                     if not timer_started:
                         race_timer = time.time()
                         timer_started = True
-                if event.key == pg.K_DOWN:
+                if event.key == pg.K_DOWN or event.key == pg.K_s:
                     down_press = True
-                if event.key == pg.K_LEFT:
+                if event.key == pg.K_LEFT or event.key == pg.K_a:
                     left_press = True
-                if event.key == pg.K_RIGHT:
+                if event.key == pg.K_RIGHT or event.key == pg.K_d:
                     right_press = True
                 if event.key == pg.K_r:
                     # restart track
@@ -102,13 +106,13 @@ def play_game(track_distance):
                     walls = track.load_walls(car.x)
                     rays = generate_rays(car.look_angle, fov, screen_width, res)
             if event.type == pg.KEYUP:
-                if event.key == pg.K_UP:
+                if event.key == pg.K_UP or event.key == pg.K_w:
                     up_press = False
-                if event.key == pg.K_DOWN:
+                if event.key == pg.K_DOWN or event.key == pg.K_s:
                     down_press = False
-                if event.key == pg.K_LEFT:
+                if event.key == pg.K_LEFT or event.key == pg.K_a:
                     left_press = False
-                if event.key == pg.K_RIGHT:
+                if event.key == pg.K_RIGHT or event.key == pg.K_d:
                     right_press = False
             if event.type == load_walls:
                 walls = track.load_walls(car.x)
@@ -126,6 +130,7 @@ def play_game(track_distance):
         if car.x > track.final_x:
             car.sound.play_finish()
             pg.quit()
+            running = False
             return (time.time() - race_timer)
         
         # ray casting
@@ -170,24 +175,16 @@ def exit_program():
     quit()
 
 if __name__ == "__main__":
-    print("---> Procedural Racing 3D <---\n")
-    print("CONTROLS:")
-    print("Use WASD or Cursor keys for steering the car")
-    print("Press R to restart the current track")
-    print("Press Escape to quit\n")
-    print("IMPORTANT: If unresponsive, click on the game window")
-    print("Also, collision detection is a bit buggy\n")
-    print("ABOUT: Developed by ChanRT | Fork me at GitHub\n")
 
-    while 1:
-        length = int(input("Enter track length (preferably between 1 and 20 km): "))
-        time_taken = play_game(length)
-        print(f"Race completed in {round(time_taken, 2)} seconds!\n")
-    
-        play_again = input("Would you like to play again? (y/n): ")
-        if play_again == "y":
-            continue
-        elif play_again == "n":
-            exit_program()
-        else:
-            exit_program()
+    try:
+        import pyi_splash
+        pyi_splash.update_text('UI Loaded ...')
+        pyi_splash.close()
+    except:
+        pass
+
+    while True:
+        length = start_menu()
+        if length == 0 or length is None:
+            break
+        play_game(length)

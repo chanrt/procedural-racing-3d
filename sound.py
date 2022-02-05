@@ -1,5 +1,6 @@
 import pygame as pg
 from time import sleep
+from loader import get_resource_path
 
 class Sound:
     def __init__(self):
@@ -7,13 +8,26 @@ class Sound:
         
         pg.mixer.init()
         
-        self.idle_sound = pg.mixer.Sound("sounds/idle.mp3")
-        self.brake_sound = pg.mixer.Sound("sounds/brake.mp3")
-        self.top_sound = pg.mixer.Sound("sounds/top_speed.mp3")
+        self.idle_sound = pg.mixer.Sound(get_resource_path("sounds/idle.mp3"))
+        self.brake_sound = pg.mixer.Sound(get_resource_path("sounds/brake.mp3"))
+        self.top_sound = pg.mixer.Sound(get_resource_path("sounds/top_speed.mp3"))
         
-        self.crash_sound = pg.mixer.Sound("sounds/crash.mp3")
-        self.scratch_sound = pg.mixer.Sound("sounds/scratch.wav")
-        self.finish_sound = pg.mixer.Sound("sounds/finish.wav")
+        self.crash_sound = pg.mixer.Sound(get_resource_path("sounds/crash.mp3"))
+        self.scratch_sound = pg.mixer.Sound(get_resource_path("sounds/scratch.wav"))
+        self.finish_sound = pg.mixer.Sound(get_resource_path("sounds/finish.wav"))
+
+    def stop_sound(self):
+        try:
+            if self.state == "idle":
+                self.idle_sound.stop()
+            elif self.state == "accelerate" or self.state == "decelerate":
+                pg.mixer.music.stop()
+            elif self.state == "brake":
+                self.brake_sound.stop()
+            elif self.state == "crash":
+                self.crash_sound.stop()
+        except:
+            pass
 
     def play_idle(self):
         state_changed = False
@@ -50,7 +64,7 @@ class Sound:
 
         if state_changed:
             self.state = "accelerate"
-            pg.mixer.music.load("sounds/accelerate.mp3")
+            pg.mixer.music.load(get_resource_path("sounds/accelerate.mp3"))
             pg.mixer.music.play(0, position * 10)
 
     def stop_accelerate(self):
@@ -72,7 +86,7 @@ class Sound:
 
         if state_changed:
             self.state = "decelerate"
-            pg.mixer.music.load("sounds/decelerate.mp3")
+            pg.mixer.music.load(get_resource_path("sounds/decelerate.mp3"))
             pg.mixer.music.play(0, position * 10)
 
     def play_brake(self):

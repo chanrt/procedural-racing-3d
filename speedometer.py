@@ -1,5 +1,6 @@
 import pygame as pg
 from math import sin, cos, pi
+from loader import get_resource_path
 
 class Speedometer:
     def __init__(self, car, screen_width, screen_height):
@@ -9,7 +10,7 @@ class Speedometer:
         speedometer_height = screen_height / 4
 
         self.image = pg.transform.smoothscale(pg.image.load(
-            "sprites/speedometer.png"), (speedometer_width, speedometer_height)).convert_alpha()
+            get_resource_path("sprites/speedometer.png")), (speedometer_width, speedometer_height)).convert_alpha()
 
         self.screen_x = screen_width - (speedometer_width)
         self.screen_y = screen_height - (speedometer_height)
