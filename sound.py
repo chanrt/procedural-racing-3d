@@ -22,10 +22,13 @@ class Sound:
                 self.idle_sound.stop()
             elif self.state == "accelerate" or self.state == "decelerate":
                 pg.mixer.music.stop()
+            elif self.state == "top":
+                self.top_sound.stop()
             elif self.state == "brake":
                 self.brake_sound.stop()
             elif self.state == "crash":
                 self.crash_sound.stop()
+            pg.mixer.pause()
         except:
             pass
 
